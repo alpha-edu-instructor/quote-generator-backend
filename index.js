@@ -1,5 +1,11 @@
 import express from "express";
-import { quotes } from "./data/quotes.js";
+import {
+  createNewQuote,
+  deleteQuote,
+  getAllQuotes,
+  getRandomQuote,
+  updateQuoteData
+} from "./controllers/quote.controller.js";
 
 const app = express();
 const PORT = 4040;
@@ -10,34 +16,11 @@ app.get("/", (req, res) => {
   res.send("Welcome to QuoteGenerator!");
 });
 
-app.get("/quotes", (req, res) => {
-  res.json({
-    name: "Quotes",
-    count: quotes.length,
-    data: quotes
-  });
-});
-
-app.get("/quotes/random", (req, res) => {
-  const index = Math.floor(Math.random() * quotes.length);
-  const quote = quotes[index];
-
-  res.json(quote);
-});
-
-app.post("/quotes", (req, res) => {
-  const newItem = {
-    id: quotes.length + 1,
-    text: req.body.text,
-    author: req.body.author
-  };
-  quotes.push(newItem);
-
-  res.json({
-    newQuote: newItem,
-    allQuotes: quotes
-  });
-});
+app.get("/quotes", getAllQuotes);
+app.get("/quotes/random", getRandomQuote);
+app.post("/quotes", createNewQuote);
+app.patch("/quotes/:id", updateQuoteData);
+app.delete("/quotes/:id", deleteQuote);
 
 app.listen(PORT, () => {
   console.log(`Сервер запущен на http://localhost:${PORT}`);
